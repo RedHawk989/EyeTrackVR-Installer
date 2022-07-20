@@ -7,8 +7,17 @@
         mc:Ignorable="d"
         Title="EyeTrackVR Installer" Height="250" Width="565"
         ResizeMode= "NoResize"
-        WindowStyle="None"
-        Background ="#000000">
+        WindowStyle="None">
+
+    <Window.Background>
+        <LinearGradientBrush>
+            <GradientStop Color="#04020f" Offset="0"/>
+            <GradientStop Color="#966694" Offset="4"/>
+
+
+        </LinearGradientBrush>
+    </Window.Background>
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="30"/>
@@ -25,8 +34,8 @@
             <ColumnDefinition/>
         </Grid.ColumnDefinitions>
 
-        <Grid Background = "#363636"
-              Grid.ColumnSpan="4"
+        <Grid Background="Transparent"
+              Grid.ColumnSpan="8"
               MouseDown="Get_MouseDown">
 
             <Grid.ColumnDefinitions>
@@ -43,13 +52,14 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock Text="EyeTrackVR"
-                       Foreground="#1cd69e"
+                       Foreground="#9164d1"
                        Grid.Column="0"
+                       Grid.ColumnSpan="2"
                        VerticalAlignment="Center"
-                       HorizontalAlignment="Center"
+                       HorizontalAlignment="Left"
                        FontFamily="Fonts/#Kanit-Bold"
-                       FontWeight="Medium"
-                       FontSize="13"
+                       FontWeight="Heavy"
+                       FontSize="17" Margin="10,0,0,0"
                        />
 
 
@@ -61,19 +71,19 @@
             <Button Content="GitHub"
                     Name="Github"
                     Click="Github_Click"
-                    Foreground="White"
-                    FontSize="14"
+                    Foreground="#9164d1"
+                    FontSize="13"
                     Grid.Column="4"
-                    FontWeight="Medium" Width="60">
+                    FontWeight="Heavy" Width="60">
 
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="TextElement.FontFamily" Value="Fonts/#Kanit-Bold"/>
-                        <Setter Property="Background" Value="#1d9974"/>
+                        <Setter Property="Background" Value="#6f4ca1"/>
                         <Setter Property="Cursor" Value="Hand"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#0f5e47"/>
+                                <Setter Property="Background" Value="#3d1d69"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -83,7 +93,7 @@
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Width="60" Height="20"
                                 CornerRadius="4"
-                                Background="{TemplateBinding Background}">
+                                Background="Transparent">
 
                             <ContentPresenter VerticalAlignment="Center"
                                           HorizontalAlignment="Center"/>
@@ -101,19 +111,19 @@
             <Button Content="Discord"
                     Name="Discord"
                     Click="Discord_Click"
-                    Foreground="White"
-                    FontSize="14"
+                    Foreground="#9164d1"
+                    FontSize="13"
                     Grid.Column="5"
-                    FontWeight="Medium" Width="60">
+                    FontWeight="Heavy" Width="60">
 
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="TextElement.FontFamily" Value="Fonts/#Kanit-Bold"/>
-                        <Setter Property="Background" Value="#1d9974"/>
+                        <Setter Property="Background" Value="#6f4ca1"/>
                         <Setter Property="Cursor" Value="Hand"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#0f5e47"/>
+                                <Setter Property="Background" Value="#3d1d69"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -123,7 +133,7 @@
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Width="60" Height="20"
                                 CornerRadius="4"
-                                Background="{TemplateBinding Background}">
+                                Background="Transparent">
 
                             <ContentPresenter VerticalAlignment="Center"
                                           HorizontalAlignment="Center"/>
@@ -144,19 +154,19 @@
             <Button Content="Docs"
                     Name="Docs"
                     Click="Docs_Click"
-                    Foreground="White"
-                    FontSize="14"
+                    Foreground="#9164d1"
+                    FontSize="13"
                     Grid.Column="6"
-                    FontWeight="Medium" Width="60">
+                    FontWeight="Heavy" Width="60">
 
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="TextElement.FontFamily" Value="Fonts/#Kanit-Bold"/>
-                        <Setter Property="Background" Value="#1d9974"/>
+                        <Setter Property="Background" Value="#6f4ca1"/>
                         <Setter Property="Cursor" Value="Hand"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#0f5e47"/>
+                                <Setter Property="Background" Value="#3d1d69"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -166,7 +176,7 @@
                     <ControlTemplate TargetType="{x:Type Button}">
                         <Border Width="60" Height="20"
                                 CornerRadius="4"
-                                Background="{TemplateBinding Background}">
+                                Background="Transparent">
 
                             <ContentPresenter VerticalAlignment="Center"
                                           HorizontalAlignment="Center"/>
@@ -194,22 +204,22 @@
 
 
 
-            <Button Content="X"
+            <Button Content="×"
                     Name="CloseButton"
                     Foreground="White"
-                    FontSize="14"
+                    FontSize="18"
                     Click="CloseButton_Click"
                     Grid.Column="7"
-                    FontWeight="Medium" Width="20" Margin="41,0,10,0">
+                    FontWeight="Normal" Width="30" Margin="36,0,5,0">
 
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="TextElement.FontFamily" Value="Fonts/#Kanit-Bold"/>
-                        <Setter Property="Background" Value="#1d9974"/>
+                        <Setter Property="Background" Value="#6f4ca1"/>
                         <Setter Property="Cursor" Value="Hand"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#0f5e47"/>
+                                <Setter Property="Background" Value="#3d1d69"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -217,7 +227,45 @@
 
                 <Button.Template>
                     <ControlTemplate TargetType="{x:Type Button}">
-                        <Border Width="20" Height="20"
+                        <Border Width="25" Height="25"
+                                CornerRadius="4"
+                                Background="{TemplateBinding Background}">
+
+                            <ContentPresenter VerticalAlignment="Center"
+                                          HorizontalAlignment="Center"/>
+
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+
+            </Button>
+
+
+
+            <Button Content="─"
+                    Name="MinimizeButton"
+                    Foreground="White"
+                    FontSize="18"
+                    Click="MinimizeButton_Click"
+                    Grid.Column="6"
+                    FontWeight="Normal" Width="30" Margin="70,0,41,0" Grid.ColumnSpan="2">
+
+                <Button.Style>
+                    <Style TargetType="{x:Type Button}">
+                        <Setter Property="TextElement.FontFamily" Value="Fonts/#Kanit-Bold"/>
+                        <Setter Property="Background" Value="#6f4ca1"/>
+                        <Setter Property="Cursor" Value="Hand"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#3d1d69"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+
+                <Button.Template>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Width="25" Height="25"
                                 CornerRadius="4"
                                 Background="{TemplateBinding Background}">
 
@@ -253,24 +301,24 @@
 
 
         </StackPanel>
-        <Image Grid.RowSpan="4" Grid.ColumnSpan="2" Height="150" Width="150" Source="Images/logo.png" Margin="-4,37,136,33" Grid.Row="1"/>
+        <Image Grid.RowSpan="4" Grid.ColumnSpan="2" Height="180" Width="180" Source="Images/logoaa.png" Margin="-12,22,114,18" Grid.Row="1"/>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3">
             <Button Content="Install"
-                    Name="InstallButton"
+                    x:Name="InstallButton"
                     Click="InstallButton_Click"
                     Foreground="White"
                     FontSize="14"
-                    FontWeight="Medium" Width="171">
+                    FontWeight="Medium" Width="171" RenderTransformOrigin="0.496,0.518">
 
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="TextElement.FontFamily" Value="Fonts/#Kanit-Bold"/>
-                        <Setter Property="Background" Value="#1d9974"/>
+                        <Setter Property="Background" Value="#6f4ca1"/>
                         <Setter Property="Cursor" Value="Hand"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#0f5e47"/>
+                                <Setter Property="Background" Value="#3d1d69"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -301,17 +349,17 @@
                     Content="Change Install Path"
                     Click="ChangePath_Click"
                     Foreground="White"
-                    FontSize="14"
+                    FontSize="13"
                     FontWeight="Medium" Width="139">
 
                 <Button.Style>
                     <Style TargetType="{x:Type Button}">
                         <Setter Property="TextElement.FontFamily" Value="Fonts/#Kanit-Bold"/>
-                        <Setter Property="Background" Value="#1d9974"/>
+                        <Setter Property="Background" Value="#6f4ca1"/>
                         <Setter Property="Cursor" Value="Hand"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#0f5e47"/>
+                                <Setter Property="Background" Value="#3d1d69"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -333,11 +381,11 @@
             </Button>
 
         </StackPanel>
-        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="C:\Program Files\EyeTrackVR" VerticalAlignment="Top" Width="326" Margin="0,10,0,0" Grid.ColumnSpan="3" Background="#FF0F5E47" Foreground="White" FontFamily="Fonts/#Kantic-Bold" FontWeight="Medium" Height="17" Grid.Column="1" />
-        <TextBlock Grid.ColumnSpan="4"  HorizontalAlignment="Left" Height="22" Margin="141,5,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Welcome to the EyeTrackVR Installer!" VerticalAlignment="Top" Width="412" Foreground="White" FontSize="20" FontFamily="Fonts/#Kantic-Bold" FontWeight="Medium"/>
-        <TextBlock Grid.ColumnSpan="4" Name="SubText" HorizontalAlignment="Left" Height="51" Margin="141,29,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Please select the folder you would like to install EyeTrackVR to." VerticalAlignment="Top" Width="326" Foreground="#FFB7B7B7" FontSize="11" FontFamily="Fonts/#Kantic-Bold" FontWeight="Medium"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" Grid.Row="3" TextWrapping="Wrap" Text="C:\Program Files\EyeTrackVR" VerticalAlignment="Top" Width="326" Margin="0,10,0,0" Grid.ColumnSpan="3" Background="#3d1d69" Foreground="White" FontFamily="Fonts/#Kantic-Bold" FontWeight="Medium" Height="17" Grid.Column="1" />
+        <TextBlock Grid.ColumnSpan="4"  HorizontalAlignment="Left" Height="22" Margin="141,5,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Welcome to the EyeTrackVR Installer!" VerticalAlignment="Top" Width="412" Foreground="White" FontSize="20" FontFamily="Fonts/#Kantic-Bold" FontWeight="SemiBold"/>
+        <TextBlock Grid.ColumnSpan="4" Name="SubText" HorizontalAlignment="Left" Height="51" Margin="141,29,0,0" Grid.Row="1" TextWrapping="Wrap" Text="Please select the folder you would like to install EyeTrackVR to." VerticalAlignment="Top" Width="343" Foreground="#FFB7B7B7" FontSize="12" FontFamily="Fonts/#Kantic-Bold" FontWeight="Medium"/>
         <CheckBox x:Name="Check"  Checked="mkCheck" Unchecked="mkUnchecked" Content="Create Desktop Shortcut" HorizontalAlignment="Left" Margin="0,26,0,0" Grid.Row="2" VerticalAlignment="Top" Grid.ColumnSpan="2" IsChecked="True" Foreground="White" FontSize="11" FontWeight="Medium" Height="17" Width="146" Grid.Column="1"/>
-        <TextBlock x:Name="textBox2" Text="" HorizontalAlignment="Left" Margin="141,62,0,0" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Top" Grid.ColumnSpan="4" Height="43" Width="326" Foreground="White"  FontSize="24" FontFamily="Fonts/#Kantic-Bold" FontWeight="Medium" Grid.RowSpan="2"/>
+        <TextBlock x:Name="textBox2" Text="" HorizontalAlignment="Left" Margin="45,0,0,33" Grid.Row="1" TextWrapping="Wrap" VerticalAlignment="Bottom" Grid.ColumnSpan="2" Height="31" Width="228" Foreground="White"  FontSize="23" FontFamily="Fonts/#Kantic-Bold" FontWeight="Medium" Grid.Column="1" Grid.RowSpan="2"/>
 
 
 

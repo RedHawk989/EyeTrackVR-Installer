@@ -19,8 +19,10 @@ using System.Net.Http;
 using System.IO;
 using System.IO.Compression;
 using IWshRuntimeLibrary;
-
-
+using System.Reflection;
+using System.Drawing.Drawing2D;
+using System.Security.AccessControl;
+using System.Security.Principal;
 
 namespace EyeTRackVR_Installer
 {
@@ -40,6 +42,14 @@ namespace EyeTRackVR_Installer
             }
         }
     }
+
+
+
+
+
+
+
+
     /// 
     /// 
     /// 
@@ -59,20 +69,93 @@ namespace EyeTRackVR_Installer
         public MainWindow()
         {
             InitializeComponent();
+
+
+
+
+
+            string rootPath = @AppDomain.CurrentDomain.BaseDirectory;
+            string[] dirs = Directory.GetDirectories(rootPath, "*", SearchOption.TopDirectoryOnly);
+
+
+
+
+           
+
+            //public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName);
+
+
+
         }
 
-
-        //public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName);
-
-
-        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        public void ExtractZipFileToDirectory(string sourceZipFilePath, string destinationDirectoryName, bool overwrite)
         {
-            Close();
+            using (var archive = ZipFile.Open(sourceZipFilePath, ZipArchiveMode.Read))
+            {
+                if (!overwrite)
+                {
+                    archive.ExtractToDirectory(destinationDirectoryName);
+                    return;
+                }
+
+                DirectoryInfo di = Directory.CreateDirectory(destinationDirectoryName);
+                string destinationDirectoryFullPath = di.FullName;
+
+                foreach (ZipArchiveEntry file in archive.Entries)
+                {
+                    string completeFileName = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationDirectoryFullPath, file.FullName));
+
+                    if (!completeFileName.StartsWith(destinationDirectoryFullPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        throw new IOException("Trying to extract file outside of destination directory. See this link for more info: https://snyk.io/research/zip-slip-vulnerability");
+                    }
+
+                    if (file.Name == "")
+                    {// Assuming Empty for Directory
+                        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(completeFileName));
+                        continue;
+                    }
+                    file.ExtractToFile(completeFileName, true);
+                }
+            }
         }
 
-        public string folderdir;
+
+
+
+        private static void GrantAccess(string file)
+        {
+            bool exists = System.IO.Directory.Exists(file);
+            if (!exists)
+            {
+                DirectoryInfo di = System.IO.Directory.CreateDirectory(file);
+                
+            }
+
+            DirectoryInfo dInfo = new DirectoryInfo(file);
+            DirectorySecurity dSecurity = dInfo.GetAccessControl();
+            dSecurity.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null), FileSystemRights.FullControl, InheritanceFlags.ObjectInherit | InheritanceFlags.ContainerInherit, PropagationFlags.NoPropagateInherit, AccessControlType.Allow));
+            dInfo.SetAccessControl(dSecurity);
+
+        }
+
+
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e) //when X is clicked, close
+        {
+                Close();
+        }
+
+        private void MinimizeButton_Click(object sender, RoutedEventArgs e) //when - is clicked, minimize
+        {
+            this.WindowState = WindowState.Minimized;
+        }
+        
+
+        public string folderdir; 
         public string inspath;
         public bool? mkshortcut;
+        public bool? delinstaller;
         public void ChangePath_Click(object sender, RoutedEventArgs e) //open file browser
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -80,31 +163,38 @@ namespace EyeTRackVR_Installer
             fbd.Description = "Select Install folder";
             fbd.ShowNewFolderButton = false;
 
-            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK) 
             {
-                inspath = fbd.SelectedPath + "\\EyeTrackVR.zip";
+                inspath = fbd.SelectedPath + "\\EyeTrackVR.zip"; //set selected path to that path and append /eyetrackvr to it
                 folderdir = fbd.SelectedPath + "\\EyeTrackVR";
                 textBox1.Text = folderdir;
             }
         }
 
 
-        private void mkUnchecked(object sender, RoutedEventArgs e)
+        private void mkUnchecked(object sender, RoutedEventArgs e)  // check if check is checked
         {
             mkshortcut = false;
-
-
         }
-
         private void mkCheck(object sender, RoutedEventArgs e)
         {
             mkshortcut = true;
 
+        }
+
+        private void delUnchecked(object sender, RoutedEventArgs e)  // check if check is checked
+        {
+            delinstaller = false;
+        }
+        private void delCheck(object sender, RoutedEventArgs e)
+        {
+            delinstaller = true;
 
         }
 
 
-        private void Docs_Click(object sender, RoutedEventArgs e)
+
+        private void Docs_Click(object sender, RoutedEventArgs e) //docs link at top
         {
 
             Process DocsProcess = new Process();
@@ -113,7 +203,7 @@ namespace EyeTRackVR_Installer
             DocsProcess.Start();
         }
 
-        private void Github_Click(object sender, RoutedEventArgs e)
+        private void Github_Click(object sender, RoutedEventArgs e) //github link at top
         {
 
             Process GithubProcess = new Process();
@@ -123,7 +213,7 @@ namespace EyeTRackVR_Installer
         }
 
 
-        private void Discord_Click(object sender, RoutedEventArgs e)
+        private void Discord_Click(object sender, RoutedEventArgs e) //discord link at top
         {
             Process DiscordProcess = new Process();
             DiscordProcess.StartInfo.UseShellExecute = true;
@@ -134,8 +224,10 @@ namespace EyeTRackVR_Installer
         public async void InstallButton_Click(object sender, RoutedEventArgs e)
         {
             //actually install stuff lmao
+            textBox2.Text = "";
             InstallButton.Content = "Installing...";
-            if (string.IsNullOrEmpty(folderdir))
+
+            if (string.IsNullOrEmpty(folderdir)) //define default dirs
             {
                 folderdir = "C:\\Program Files\\EyeTrackVR";
             }
@@ -145,26 +237,37 @@ namespace EyeTRackVR_Installer
                 inspath = "C:\\Program Files\\EyeTrackVR\\EyeTrackVR.zip";
             }
 
+            System.IO.Directory.CreateDirectory(folderdir); //create install dir
 
-            System.IO.Directory.CreateDirectory(folderdir);
 
             System.Net.WebClient wc = new System.Net.WebClient();
-            byte[] raw = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR/main/Latest_Version.txt");  //get download link from repo
-
+            byte[] raw = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Latest_Version.txt");  //get download link from repo
             string webData = System.Text.Encoding.UTF8.GetString(raw);
             webData = webData.Replace("\n", "").Replace("\r", "");
 
 
             InstallButton.Content = "Downloading...";
-            using (var httpClient = new HttpClient()) // download
+            using (var httpClient = new HttpClient()) // download zip
             {
                 HttpClient httpClient1 = httpClient;
                 await httpClient1.DownloadFile(webData, inspath);
             }
 
-
+            
             InstallButton.Content = "Extracting...";
-            ZipFile.ExtractToDirectory(inspath, folderdir); //extract zip
+            await Task.Delay(500); //give OS time. fixes odd bug where System.IO.InvalidDataException: 'Central Directory corrupt.' would be called
+                                   // ZipFile.ExtractToDirectory(inspath, folderdir); //extract zip
+
+
+            ExtractZipFileToDirectory(inspath, folderdir, true);
+
+
+
+
+
+            GrantAccess(folderdir); //make perms on install folder user, this keeps the eyetracking app from trowing no permission errors.
+
+
 
             InstallButton.Content = "Cleaning...";
             System.IO.File.Delete(inspath); // delete zip
@@ -172,50 +275,32 @@ namespace EyeTRackVR_Installer
 
        
 
-            byte[] raw2 = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR/main/ver_num.txt");  //get download link from repo
+            byte[] raw2 = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Version_Num.txt");  //get download link from repo
 
             string webData2 = System.Text.Encoding.UTF8.GetString(raw2);
             webData2 = webData2.Replace("\n", "").Replace("\r", "");
-            InstallButton.Content = "Making Shortcut...";
-
-
-            // we need to check if create shortcut was checked
 
 
 
 
-            if (!mkshortcut.HasValue || mkshortcut is true)
+
+
+
+           
+            if (!mkshortcut.HasValue || mkshortcut is true)         // if box is checked make a shortcut on desktop
             {
+                InstallButton.Content = "Making Shortcut...";
                 string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                string exepath = folderdir + "\\RANSACApp-" + webData2 + "\\RANSACApp.exe";
+                string exepath = folderdir + "\\eyetrackapp" + "\\EyeTrackApp.exe";
 
                 string link = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
                 + System.IO.Path.DirectorySeparatorChar + "EyeTrackVR" + ".lnk";
                 var shell = new WshShell();
                 var shortcut = shell.CreateShortcut(link) as IWshShortcut;
                 shortcut.TargetPath = exepath;
-                shortcut.WorkingDirectory = folderdir;
-                //shortcut...
-                shortcut.Save(); // null
+                shortcut.WorkingDirectory = folderdir; //where output files will be made from the eyetrack app
+                shortcut.Save(); 
             }
-
-
-
-            /* WshShell wsh = new WshShell();
-             IWshRuntimeLibrary.IWshShortcut shortcut = wsh.CreateShortcut(
-                 Environment.GetFolderPath(Environment.SpecialFolder.Desktop) + "\\EyeTrackVR.lnk") as IWshRuntimeLibrary.IWshShortcut;
-             shortcut.Arguments = "";
-             shortcut.TargetPath = exepath;
-             // not sure about what this is for
-             shortcut.WindowStyle = 1;
-             shortcut.Description = "Shortcut for EyeTrackVR";
-             shortcut.WorkingDirectory = folderdir;
-             shortcut.IconLocation = "Images/logo.png";
-             shortcut.Save();
-            */
-
-
-
 
 
 

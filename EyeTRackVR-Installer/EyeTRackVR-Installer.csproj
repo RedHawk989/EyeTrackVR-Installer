@@ -12,6 +12,8 @@
 
   <ItemGroup>
     <None Remove="Images\logo.png" />
+    <None Remove="Images\logoaa.png" />
+    <None Remove="Images\logonbk.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -24,6 +26,15 @@
       <Isolated>false</Isolated>
       <EmbedInteropTypes>true</EmbedInteropTypes>
     </COMReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\logoaa.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Images\logonbk.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
