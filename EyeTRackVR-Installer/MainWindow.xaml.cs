@@ -165,7 +165,7 @@ namespace EyeTRackVR_Installer
 
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK) 
             {
-                inspath = fbd.SelectedPath + "\\EyeTrackVR.zip"; //set selected path to that path and append /eyetrackvr to it
+                inspath = fbd.SelectedPath + "\\EyeTrackVRtemp.zip"; //set selected path to that path and append /eyetrackvr to it
                 folderdir = fbd.SelectedPath + "\\EyeTrackVR";
                 textBox1.Text = folderdir;
             }
@@ -227,6 +227,20 @@ namespace EyeTRackVR_Installer
             textBox2.Text = "";
             InstallButton.Content = "Installing...";
 
+            System.Net.WebClient wc = new System.Net.WebClient();
+            byte[] raw = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Latest_Version.txt");  //get download link from repo
+            string webData = System.Text.Encoding.UTF8.GetString(raw);
+            webData = webData.Replace("\n", "").Replace("\r", "");
+
+
+            System.Net.WebClient wc2 = new System.Net.WebClient();
+            byte[] raw2 = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Version_Num.txt");  //get latest version num
+            string webData2 = System.Text.Encoding.UTF8.GetString(raw2);
+            webData2 = webData2.Replace("\n", "").Replace("\r", "");
+
+
+
+
             if (string.IsNullOrEmpty(folderdir)) //define default dirs
             {
                 folderdir = "C:\\Program Files\\EyeTrackVR";
@@ -234,16 +248,13 @@ namespace EyeTRackVR_Installer
 
             if (string.IsNullOrEmpty(inspath))
             {
-                inspath = "C:\\Program Files\\EyeTrackVR\\EyeTrackVR.zip";
+                inspath = "C:\\Program Files\\EyeTrackVR\\EyeTrackVRtemp.zip"; //name of zip folder once downloaded
             }
 
             System.IO.Directory.CreateDirectory(folderdir); //create install dir
 
 
-            System.Net.WebClient wc = new System.Net.WebClient();
-            byte[] raw = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Latest_Version.txt");  //get download link from repo
-            string webData = System.Text.Encoding.UTF8.GetString(raw);
-            webData = webData.Replace("\n", "").Replace("\r", "");
+
 
 
             InstallButton.Content = "Downloading...";
@@ -273,17 +284,6 @@ namespace EyeTRackVR_Installer
             System.IO.File.Delete(inspath); // delete zip
 
 
-       
-
-            byte[] raw2 = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Version_Num.txt");  //get download link from repo
-
-            string webData2 = System.Text.Encoding.UTF8.GetString(raw2);
-            webData2 = webData2.Replace("\n", "").Replace("\r", "");
-
-
-
-
-
 
 
            
@@ -291,12 +291,13 @@ namespace EyeTRackVR_Installer
             {
                 InstallButton.Content = "Making Shortcut...";
                 string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                string exepath = folderdir + "\\eyetrackapp" + "\\EyeTrackApp.exe";
-
+                string exepath = folderdir + "\\EyeTrackApp-" + webData2 + "-win-amd-64\\EyeTrackApp.exe";
+                
                 string link = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
                 + System.IO.Path.DirectorySeparatorChar + "EyeTrackVR" + ".lnk";
                 var shell = new WshShell();
                 var shortcut = shell.CreateShortcut(link) as IWshShortcut;
+                
                 shortcut.TargetPath = exepath;
                 shortcut.WorkingDirectory = folderdir; //where output files will be made from the eyetrack app
                 shortcut.Save(); 
