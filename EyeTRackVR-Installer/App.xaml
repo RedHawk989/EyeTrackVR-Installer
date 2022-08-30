@@ -1,9 +1,0 @@
-﻿<Application x:Class="EyeTRackVR_Installer.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:EyeTRackVR_Installer"
-             StartupUri="MainWindow.xaml">
-    <Application.Resources>
-        <BitmapImage x:Key="logo" UriSource="Images/logo.png" />
-    </Application.Resources>
-</Application>

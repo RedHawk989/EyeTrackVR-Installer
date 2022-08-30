@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32407.343
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EyeTrackVR-Installer", "EyeTrackVR-Installer\EyeTrackVR-Installer.csproj", "{775F55DD-A180-4653-AB83-3F9AA8608F9C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{775F55DD-A180-4653-AB83-3F9AA8608F9C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{775F55DD-A180-4653-AB83-3F9AA8608F9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{775F55DD-A180-4653-AB83-3F9AA8608F9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{775F55DD-A180-4653-AB83-3F9AA8608F9C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {662D93B8-9A28-4E66-B3DC-816D346DC850}
+	EndGlobalSection
+EndGlobal
