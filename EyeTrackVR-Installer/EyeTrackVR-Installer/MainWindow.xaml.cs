@@ -73,6 +73,7 @@ namespace EyeTrackVR_Installer
 
         }
 
+        
         public void ExtractZipFileToDirectory(string sourceZipFilePath, string destinationDirectoryName, bool overwrite)
         {
             using (var archive = ZipFile.Open(sourceZipFilePath, ZipArchiveMode.Read))
@@ -85,6 +86,7 @@ namespace EyeTrackVR_Installer
 
                 DirectoryInfo di = Directory.CreateDirectory(destinationDirectoryName);
                 string destinationDirectoryFullPath = di.FullName;
+                SubText.Text = di.FullName;
 
                 foreach (ZipArchiveEntry file in archive.Entries)
                 {
@@ -161,8 +163,8 @@ namespace EyeTrackVR_Installer
 
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                inspath = fbd.SelectedPath + "\\EyeTrackVR-Temp.zip"; //set selected path to that path and append /eyetrackvr to it
-                folderdir = fbd.SelectedPath + "\\EyeTrackVR";
+                inspath = fbd.SelectedPath + "\\EyeTrackApp.zip"; //set selected path to that path and append /eyetrackvr to it
+                folderdir = fbd.SelectedPath + "\\EyeTrackVR\\EyeTrackVR\\";
                 textBox1.Text = folderdir;
             }
         }
@@ -214,7 +216,7 @@ namespace EyeTrackVR_Installer
 
             if (string.IsNullOrEmpty(inspath))
             {
-                inspath = "C:\\Program Files\\EyeTrackVR\\EyeTrackVR-Temp.zip"; //name of zip folder once downloaded
+                inspath = "C:\\Program Files\\EyeTrackVR\\EyeTrackApp.zip"; //name of zip folder once downloaded
             }
 
             System.IO.Directory.CreateDirectory(folderdir); //create install dir
@@ -222,7 +224,7 @@ namespace EyeTrackVR_Installer
 
 
 
-
+            SubText.Text = inspath;
             InstallButton.Content = "Downloading...";
             using (var httpClient = new HttpClient()) // download zip
             {
@@ -234,9 +236,13 @@ namespace EyeTrackVR_Installer
             InstallButton.Content = "Extracting...";
             await Task.Delay(500); //give OS time. fixes odd bug where System.IO.InvalidDataException: 'Central Directory corrupt.' would be called
                                    // ZipFile.ExtractToDirectory(inspath, folderdir); //extract zip
-
-
-            ExtractZipFileToDirectory(inspath, folderdir, true);
+            
+            if (Directory.Exists(folderdir))
+            {
+                ZipFile.ExtractToDirectory(inspath, folderdir);
+                //ExtractZipFileToDirectory(inspath, folderdir, true);
+            }
+                
 
 
 
@@ -274,7 +280,7 @@ namespace EyeTrackVR_Installer
 
 
 
-            textBox2.Text = "Successfully Installed!";
+           // textBox2.Text = "Successfully Installed!";
             InstallButton.Content = "Installed!";
         }
 
