@@ -16,3 +16,7 @@ C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTra
 C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTrackVR-Installer\obj\Debug\EyeTrackVR-Installer.csproj.CoreCompileInputs.cache
 C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTrackVR-Installer\obj\Debug\EyeTrackVR-Installer.exe
 C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTrackVR-Installer\obj\Debug\EyeTrackVR-Installer.pdb
+C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTrackVR-Installer\bin\Debug\EyeTrackVR-Installer.exe.manifest
+C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTrackVR-Installer\bin\Debug\EyeTrackVR-Installer.application
+C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTrackVR-Installer\obj\Debug\EyeTrackVR-Installer.exe.manifest
+C:\Users\beaul\Documents\GitHub\EyeTrackVR-Installer\EyeTrackVR-Installer\EyeTrackVR-Installer\obj\Debug\EyeTrackVR-Installer.application

@@ -252,7 +252,7 @@ namespace EyeTrackVR_Installer
 
 
 
-           // textBox2.Text = "Successfully Installed!";
+            textBox2.Text = "Successfully Installed!";
             InstallButton.Content = "Installed!";
         }
 
