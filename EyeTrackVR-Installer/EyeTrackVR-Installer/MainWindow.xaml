@@ -301,7 +301,7 @@
 
 
         </StackPanel>
-        <Image Grid.RowSpan="4" Grid.ColumnSpan="2" Height="180" Width="180" Source="Images/logoaa.png" Margin="-12,22,114,18" Grid.Row="1"/>
+        <Image Grid.RowSpan="4" Grid.ColumnSpan="2" Height="180" Width="180" Source="logoaa.png" Margin="-12,22,114,18" Grid.Row="1"/>
 
         <StackPanel Orientation="Horizontal" Grid.Row="4" Grid.Column="3">
             <Button Content="Install"

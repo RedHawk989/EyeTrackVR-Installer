@@ -56,24 +56,13 @@ namespace EyeTrackVR_Installer
             InitializeComponent();
 
 
-
-
-
             string rootPath = @AppDomain.CurrentDomain.BaseDirectory;
             string[] dirs = Directory.GetDirectories(rootPath, "*", SearchOption.TopDirectoryOnly);
 
-
-
-
-
-
-            //public static void ExtractToDirectory(string sourceArchiveFileName, string destinationDirectoryName);
-
-
-
         }
 
-        
+
+
         public void ExtractZipFileToDirectory(string sourceZipFilePath, string destinationDirectoryName, bool overwrite)
         {
             using (var archive = ZipFile.Open(sourceZipFilePath, ZipArchiveMode.Read))
@@ -86,7 +75,6 @@ namespace EyeTrackVR_Installer
 
                 DirectoryInfo di = Directory.CreateDirectory(destinationDirectoryName);
                 string destinationDirectoryFullPath = di.FullName;
-                SubText.Text = di.FullName;
 
                 foreach (ZipArchiveEntry file in archive.Entries)
                 {
@@ -100,6 +88,7 @@ namespace EyeTrackVR_Installer
                     if (file.Name == "")
                     {// Assuming Empty for Directory
                         Directory.CreateDirectory(System.IO.Path.GetDirectoryName(completeFileName));
+
                         continue;
                     }
                     file.ExtractToFile(completeFileName, true);
@@ -127,7 +116,6 @@ namespace EyeTrackVR_Installer
         }
 
 
-
         private void CloseButton_Click(object sender, RoutedEventArgs e) //when X is clicked, close
         {
             Close();
@@ -137,6 +125,8 @@ namespace EyeTrackVR_Installer
         {
             this.WindowState = WindowState.Minimized;
         }
+        const string lverurl = "https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Latest_Version.txt"; // install version data etc
+        const string vnumurl = "https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Version_Num.txt";
 
         const string DocsLink = "https://redhawk989.github.io/EyeTrackVR/"; // top links string deff
         const string GitHubLink = "https://github.com/RedHawk989/EyeTrackVR";
@@ -165,22 +155,29 @@ namespace EyeTrackVR_Installer
             {
                 inspath = fbd.SelectedPath + "\\EyeTrackApp.zip"; //set selected path to that path and append /eyetrackvr to it
                 folderdir = fbd.SelectedPath + "\\EyeTrackVR\\EyeTrackVR\\";
-                textBox1.Text = folderdir;
+   
             }
         }
 
+
+        public string HttpData(string link)
+        {
+            HttpClient client = new HttpClient();
+            HttpResponseMessage response = client.GetAsync(link).Result; 
+            HttpContent content = response.Content;
+            string lver = content.ReadAsStringAsync().Result;
+            return lver;
+        }
 
 
         private void Docs_Click(object sender, RoutedEventArgs e) //docs link at top
         {
             LinkSet(DocsLink);
         }
-
         private void Github_Click(object sender, RoutedEventArgs e) //github link at top
         {
             LinkSet(GitHubLink);
         }
-
         private void Discord_Click(object sender, RoutedEventArgs e) //discord link at top
         {
             LinkSet(DiscordLink);
@@ -190,23 +187,12 @@ namespace EyeTrackVR_Installer
         {
             //actually install stuff lmao
             textBox2.Text = "";
-            InstallButton.Content = "Installing...";
-
-            System.Net.WebClient wc = new System.Net.WebClient();
-            byte[] raw = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Latest_Version.txt");  //get download link from repo
-            string webData = System.Text.Encoding.UTF8.GetString(raw);
-            webData = webData.Replace("\n", "").Replace("\r", "");
+            InstallButton.Content = "Installing";
 
 
 
-
-
-            System.Net.WebClient wc2 = new System.Net.WebClient();
-            byte[] raw2 = wc.DownloadData("https://raw.githubusercontent.com/RedHawk989/EyeTrackVR-Installer/master/Version-Data/Version_Num.txt");  //get latest version num
-            string webData2 = System.Text.Encoding.UTF8.GetString(raw2);
-            webData2 = webData2.Replace("\n", "").Replace("\r", "");
-
-
+            string lver = HttpData(lverurl);
+           // string vernum = HttpData(vnumurl);
 
 
             if (string.IsNullOrEmpty(folderdir)) //define default dirs
@@ -221,41 +207,47 @@ namespace EyeTrackVR_Installer
 
             System.IO.Directory.CreateDirectory(folderdir); //create install dir
 
-
-
-
-            SubText.Text = inspath;
-            InstallButton.Content = "Downloading...";
+            InstallButton.Content = "Downloading";
             using (var httpClient = new HttpClient()) // download zip
             {
                 HttpClient httpClient1 = httpClient;
-                await httpClient1.DownloadFile(webData, inspath);
+               // httpClient1.Timeout = new TimeSpan(0, 0, 300); // timeout 300 seconds (5min)
+                await httpClient1.DownloadFile(lver, inspath);
             }
 
 
-            InstallButton.Content = "Extracting...";
+            InstallButton.Content = "Extracting";
             await Task.Delay(500); //give OS time. fixes odd bug where System.IO.InvalidDataException: 'Central Directory corrupt.' would be called
                                    // ZipFile.ExtractToDirectory(inspath, folderdir); //extract zip
-            
-            if (Directory.Exists(folderdir))
+
+
+            if (Directory.Exists(folderdir) && Directory.Exists(folderdir + "EyeTrackApp"))
             {
-                ZipFile.ExtractToDirectory(inspath, folderdir);
+                Directory.Delete(folderdir + "EyeTrackApp", true);
+
+                ExtractZipFileToDirectory(inspath, folderdir, true);
+
+              //  ZipFile.ExtractToDirectory(inspath, folderdir);
+                //ExtractToDirectory(inspath, folderdir, true);
                 //ExtractZipFileToDirectory(inspath, folderdir, true);
             }
-                
 
 
+            if (Directory.Exists(folderdir))
+            {
+                //Directory.Delete(folderdir + "\\EyeTrackApp");
+                ExtractZipFileToDirectory(inspath, folderdir, true);
 
+
+               // ZipFile.ExtractToDirectory(inspath, folderdir);
+            }
 
 
             GrantAccess(folderdir); //make perms on install folder user, this keeps the eyetracking app from trowing no permission errors.
 
 
-
-            InstallButton.Content = "Cleaning...";
+            InstallButton.Content = "Cleaning";
             System.IO.File.Delete(inspath); // delete zip
-
-
 
 
 
@@ -263,7 +255,7 @@ namespace EyeTrackVR_Installer
             {
                 InstallButton.Content = "Making Shortcut...";
                 string deskDir = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-                string exepath = folderdir + "\\EyeTrackApp-" + webData2 + "-win-amd-64\\EyeTrackApp.exe";
+                string exepath = folderdir + "\\EyeTrackApp\\eyetrackapp.exe";
 
                 string link = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
                 + System.IO.Path.DirectorySeparatorChar + "EyeTrackVR" + ".lnk";
@@ -274,9 +266,6 @@ namespace EyeTrackVR_Installer
                 shortcut.WorkingDirectory = folderdir; //where output files will be made from the eyetrack app
                 shortcut.Save();
             }
-
-
-
 
 
 
@@ -291,10 +280,6 @@ namespace EyeTrackVR_Installer
                 DragMove();
             }
         }
-
-
-
-
 
     }
 }
