@@ -221,27 +221,10 @@ namespace EyeTrackVR_Installer
                                    // ZipFile.ExtractToDirectory(inspath, folderdir); //extract zip
 
 
-            if (Directory.Exists(folderdir) && Directory.Exists(folderdir + "EyeTrackApp"))
-            {
-                Directory.Delete(folderdir + "EyeTrackApp", true);
-
-                ExtractZipFileToDirectory(inspath, folderdir, true);
-
-              //  ZipFile.ExtractToDirectory(inspath, folderdir);
-                //ExtractToDirectory(inspath, folderdir, true);
-                //ExtractZipFileToDirectory(inspath, folderdir, true);
-            }
-
-
             if (Directory.Exists(folderdir))
             {
-                //Directory.Delete(folderdir + "\\EyeTrackApp");
                 ExtractZipFileToDirectory(inspath, folderdir, true);
-
-
-               // ZipFile.ExtractToDirectory(inspath, folderdir);
             }
-
 
             GrantAccess(folderdir); //make perms on install folder user, this keeps the eyetracking app from trowing no permission errors.
 
