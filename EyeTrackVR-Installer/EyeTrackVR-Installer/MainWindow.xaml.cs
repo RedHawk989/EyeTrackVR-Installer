@@ -162,11 +162,14 @@ namespace EyeTrackVR_Installer
 
         public string HttpData(string link)
         {
-            HttpClient client = new HttpClient();
-            HttpResponseMessage response = client.GetAsync(link).Result; 
-            HttpContent content = response.Content;
-            string lver = content.ReadAsStringAsync().Result;
-            return lver;
+            using (HttpClient client = new HttpClient())
+            {
+                HttpResponseMessage response = client.GetAsync(link).Result;
+                HttpContent content = response.Content;
+                string lver = content.ReadAsStringAsync().Result;
+                return lver;
+            }
+
         }
 
 
