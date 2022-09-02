@@ -63,10 +63,11 @@ namespace EyeTrackVR_Installer
 
 
 
-        public void ExtractZipFileToDirectory(string sourceZipFilePath, string destinationDirectoryName, bool overwrite)
+        public void ExtractZipFileToDirectory(string sourceZipFilePath, string destinationDirectoryName, bool overwrite) /// WHY DOES THIS NOT WORK IGHKLSJDHGLKJSHDGLKJSHDGLKJSH HELPPPPPPPPP
         {
             using (var archive = ZipFile.Open(sourceZipFilePath, ZipArchiveMode.Read))
             {
+
                 if (!overwrite)
                 {
                     archive.ExtractToDirectory(destinationDirectoryName);
@@ -153,9 +154,9 @@ namespace EyeTrackVR_Installer
 
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                inspath = fbd.SelectedPath + "\\EyeTrackApp.zip"; //set selected path to that path and append /eyetrackvr to it
-                folderdir = fbd.SelectedPath + "\\EyeTrackVR\\EyeTrackVR\\";
-   
+                inspath = fbd.SelectedPath + "\\EyeTrackVR\\EyeTrackApp.zip"; //set selected path to that path and append /eyetrackvr to it
+                folderdir = fbd.SelectedPath + "\\EyeTrackVR\\";
+                textBox1.Text = folderdir;
             }
         }
 
@@ -205,7 +206,7 @@ namespace EyeTrackVR_Installer
 
             if (string.IsNullOrEmpty(inspath))
             {
-                inspath = "C:\\Program Files\\EyeTrackVR\\EyeTrackApp.zip"; //name of zip folder once downloaded
+                inspath = "C:\\Program Files\\EyeTrackVR\\EyeTrackApp.zip"; // default name of zip folder once downloaded
             }
 
             System.IO.Directory.CreateDirectory(folderdir); //create install dir
@@ -226,7 +227,11 @@ namespace EyeTrackVR_Installer
 
             if (Directory.Exists(folderdir))
             {
+                SubText.Text = folderdir;
+              //  await Task.Delay(5000);
                 ExtractZipFileToDirectory(inspath, folderdir, true);
+                SubText.Text = "sus";
+                await Task.Delay(5000);
             }
 
             GrantAccess(folderdir); //make perms on install folder user, this keeps the eyetracking app from trowing no permission errors.
