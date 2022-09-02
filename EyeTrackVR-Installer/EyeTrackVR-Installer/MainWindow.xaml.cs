@@ -65,35 +65,67 @@ namespace EyeTrackVR_Installer
 
         public void ExtractZipFileToDirectory(string sourceZipFilePath, string destinationDirectoryName, bool overwrite) /// WHY DOES THIS NOT WORK IGHKLSJDHGLKJSHDGLKJSHDGLKJSH HELPPPPPPPPP
         {
-            using (var archive = ZipFile.Open(sourceZipFilePath, ZipArchiveMode.Read))
-            {
+            try
+            { 
+                //Declare a temporary path to unzip your files
+                string tempPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "tempUnzip");
+                
+                ZipFile.ExtractToDirectory(sourceZipFilePath, tempPath);
 
-                if (!overwrite)
+                //build an array of the unzipped directories:
+                string[] folders = Directory.GetDirectories(tempPath);
+
+                foreach (string folder in folders)
                 {
-                    archive.ExtractToDirectory(destinationDirectoryName);
-                    return;
-                }
-
-                DirectoryInfo di = Directory.CreateDirectory(destinationDirectoryName);
-                string destinationDirectoryFullPath = di.FullName;
-
-                foreach (ZipArchiveEntry file in archive.Entries)
-                {
-                    string completeFileName = System.IO.Path.GetFullPath(System.IO.Path.Combine(destinationDirectoryFullPath, file.FullName));
-
-                    if (!completeFileName.StartsWith(destinationDirectoryFullPath, StringComparison.OrdinalIgnoreCase))
+                    DirectoryInfo d = new DirectoryInfo(folder);
+                    //If the directory doesn't already exist in the destination folder, move it to the destination.
+                    if (!Directory.Exists(System.IO.Path.Combine(destinationDirectoryName, d.Name)))
                     {
-                        throw new IOException("Trying to extract file outside of destination directory. See this link for more info: https://snyk.io/research/zip-slip-vulnerability");
-                    }
-
-                    if (file.Name == "")
-                    {// Assuming Empty for Directory
-                        Directory.CreateDirectory(System.IO.Path.GetDirectoryName(completeFileName));
-
+                        Directory.Move(d.FullName, System.IO.Path.Combine(destinationDirectoryName, d.Name));
                         continue;
                     }
-                    file.ExtractToFile(completeFileName, true);
+                    //If directory does exist, iterate through the files updating duplicates.
+                    else
+                    {
+                        string[] subFiles = Directory.GetFiles(d.FullName);
+                        foreach (string subFile in subFiles)
+                        {
+                            FileInfo f = new FileInfo(subFile);
+                            //Check if the file exists already, if so delete it and then move the new file to the extract folder
+                            if (System.IO.File.Exists(System.IO.Path.Combine(destinationDirectoryName, d.Name, f.Name)))
+                            {
+                                System.IO.File.Delete(System.IO.Path.Combine(destinationDirectoryName, d.Name, f.Name));
+                                System.IO.File.Move(f.FullName, System.IO.Path.Combine(destinationDirectoryName, d.Name, f.Name));
+                            }
+                            else
+                            {
+                                System.IO.File.Move(f.FullName, System.IO.Path.Combine(destinationDirectoryName, d.Name, f.Name));
+                            }
+                        }
+                    }
                 }
+                //build an array of the unzipped files in the parent directory
+                string[] files = Directory.GetFiles(tempPath);
+
+                foreach (string file in files)
+                {
+                    FileInfo f = new FileInfo(file);
+                    //Check if the file exists already, if so delete it and then move the new file to the extract folder
+                    if (System.IO.File.Exists(System.IO.Path.Combine(destinationDirectoryName, f.Name)))
+                    {
+                        System.IO.File.Delete(System.IO.Path.Combine(destinationDirectoryName, f.Name));
+                        System.IO.File.Move(f.FullName, System.IO.Path.Combine(destinationDirectoryName, f.Name));
+                    }
+                    else
+                    {
+                        System.IO.File.Move(f.FullName, System.IO.Path.Combine(destinationDirectoryName, f.Name));
+                    }
+                }
+                Directory.Delete(tempPath);
+            }
+            catch (Exception ex)
+            {
+                const string errmsg = "aua";
             }
         }
 
@@ -227,11 +259,7 @@ namespace EyeTrackVR_Installer
 
             if (Directory.Exists(folderdir))
             {
-                SubText.Text = folderdir;
-              //  await Task.Delay(5000);
                 ExtractZipFileToDirectory(inspath, folderdir, true);
-                SubText.Text = "sus";
-                await Task.Delay(5000);
             }
 
             GrantAccess(folderdir); //make perms on install folder user, this keeps the eyetracking app from trowing no permission errors.
