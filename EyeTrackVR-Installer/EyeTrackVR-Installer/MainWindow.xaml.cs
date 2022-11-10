@@ -44,10 +44,52 @@ namespace EyeTrackVR_Installer
                 stream.CopyTo(file);
             }
         }
+
+        public static void Empty(this System.IO.DirectoryInfo directory)
+        {
+            foreach (System.IO.FileInfo file in directory.GetFiles()) file.Delete();
+            foreach (System.IO.DirectoryInfo subDirectory in directory.GetDirectories()) subDirectory.Delete(true);
+        }
+    }
+
+
+    public static class ZipArchiveExtension
+    {
+        public static void ExtractToDirectory(this ZipArchive archive, string destinationDirectoryName, bool overwrite)
+        {
+            if (!overwrite)
+            {
+                archive.ExtractToDirectory(destinationDirectoryName);
+                return;
+            }
+            foreach (ZipArchiveEntry file in archive.Entries)
+            {
+                string completeFileName = System.IO.Path.Combine(destinationDirectoryName, file.FullName);
+                if (file.Name == "")
+                {// Assuming Empty for Directory
+                    Directory.CreateDirectory(System.IO.Path.GetDirectoryName(completeFileName));
+                    continue;
+                }
+                file.ExtractToFile(completeFileName, true);
+            }
+        }
     }
 
 
 
+    public static class HttpClientUtils
+    {
+        public static async Task DownloadFileTaskAsync(this HttpClient client, Uri uri, string FileName)
+        {
+            using (var s = await client.GetStreamAsync(uri))
+            {
+                using (var fs = new FileStream(FileName, FileMode.CreateNew))
+                {
+                    await s.CopyToAsync(fs);
+                }
+            }
+        }
+    }
 
     public partial class MainWindow : Window
     {
@@ -62,13 +104,12 @@ namespace EyeTrackVR_Installer
         }
 
 
-
         public void ExtractZipFileToDirectory(string sourceZipFilePath, string destinationDirectoryName, bool overwrite) /// WHY DOES THIS NOT WORK IGHKLSJDHGLKJSHDGLKJSHDGLKJSH HELPPPPPPPPP
         {
             try
             { 
                 //Declare a temporary path to unzip your files
-                string tempPath = System.IO.Path.Combine(Directory.GetCurrentDirectory(), "tempUnzip");
+                string tempPath = System.IO.Path.Combine(Directory.GetCurrentDirectory() + "tempUnzip");
                 
                 ZipFile.ExtractToDirectory(sourceZipFilePath, tempPath);
 
@@ -187,7 +228,7 @@ namespace EyeTrackVR_Installer
             if (fbd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 inspath = fbd.SelectedPath + "\\EyeTrackVR\\EyeTrackApp.zip"; //set selected path to that path and append /eyetrackvr to it
-                folderdir = fbd.SelectedPath + "\\EyeTrackVR\\";
+                folderdir = fbd.SelectedPath + "\\EyeTrackVR";
                 textBox1.Text = folderdir;
             }
         }
@@ -244,29 +285,55 @@ namespace EyeTrackVR_Installer
             System.IO.Directory.CreateDirectory(folderdir); //create install dir
 
             InstallButton.Content = "Downloading";
-            using (var httpClient = new HttpClient()) // download zip
+            //  using (var httpClient = new HttpClient()) // download zip
+            // {
+            //    HttpClient httpClient1 = httpClient;
+            // httpClient1.Timeout = new TimeSpan(0, 0, 300); // timeout 300 seconds (5min)
+            // await httpClient1.DownloadFile(lver, inspath);
+            //     await httpClient1.DownloadFile("https://github.com/RedHawk989/EyeTrackVR/releases/download/EyeTrackApp-0.1.6/EyeTrackApp-0.1.6-win-amd-64.zip", inspath);
+            //   textBox2.Text = inspath;
+
+            // }
+
+            // uri = new Uri(lver);
+            using (var client = new System.Net.Http.HttpClient()) // WebClient
             {
-                HttpClient httpClient1 = httpClient;
-               // httpClient1.Timeout = new TimeSpan(0, 0, 300); // timeout 300 seconds (5min)
-                await httpClient1.DownloadFile(lver, inspath);
+                var uri = new Uri(lver);
+
+                await client.DownloadFileTaskAsync(uri, "C:\\Program Files\\tempeyetrackapp.zip");
             }
 
 
             InstallButton.Content = "Extracting";
-            await Task.Delay(500); //give OS time. fixes odd bug where System.IO.InvalidDataException: 'Central Directory corrupt.' would be called
+            await Task.Delay(300); //give OS time. fixes odd bug where System.IO.InvalidDataException: 'Central Directory corrupt.' would be called
                                    // ZipFile.ExtractToDirectory(inspath, folderdir); //extract zip
 
 
+            if (Directory.Exists(folderdir + "\\EyeTrackApp"))
+            {
+                System.IO.DirectoryInfo directory = new System.IO.DirectoryInfo(folderdir + "\\EyeTrackApp");
+
+                directory.Empty();
+
+            }
             if (Directory.Exists(folderdir))
             {
-                ExtractZipFileToDirectory(inspath, folderdir, true);
+               
+                ZipFile.ExtractToDirectory("C:\\Program Files\\tempeyetrackapp.zip", folderdir);
             }
+                
+                //ExtractZipFileToDirectory(inspath, folderdir, true);
+               // ExtractZipFileToDirectory("C:\\Users\\beaul\\OneDrive\\Desktop\\EyeTrackVR-Installer\\EyeTrackVR", "C:\\Users\\beaul\\OneDrive\\Desktop\\EyeTrackVR - Installer\\EyeTrackVR\\EyeTrackApp.zip", true);
+               // textBox2.Text = inspath;
+
+            
+
 
             GrantAccess(folderdir); //make perms on install folder user, this keeps the eyetracking app from trowing no permission errors.
 
 
             InstallButton.Content = "Cleaning";
-            System.IO.File.Delete(inspath); // delete zip
+            System.IO.File.Delete("C:\\Program Files\\tempeyetrackapp.zip"); // delete zip
 
 
 
