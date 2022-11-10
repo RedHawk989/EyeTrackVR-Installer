@@ -1,1 +1,1 @@
-https://github.com/RedHawk989/EyeTrackVR/releases/download/EyeTrackApp-0.1.7.1/EyeTrackApp-0.1.7.1-win-amd-64.zip
+https://github.com/RedHawk989/EyeTrackVR/releases/download/EyeTrackApp-0.1.7.2/EyeTrackApp-0.1.7.2-win-amd-64.zip
